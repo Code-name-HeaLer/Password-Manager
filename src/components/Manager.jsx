@@ -2,8 +2,8 @@ import React, { useEffect } from "react";
 import { useState } from "react";
 import { useRef } from "react";
 
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Manager = () => {
     const ref = useRef();
@@ -19,7 +19,7 @@ const Manager = () => {
     }, []);
 
     const copyText = (text) => {
-        toast('Copied to Clipboard', {
+        toast("Copied to Clipboard", {
             position: "top-right",
             autoClose: 5000,
             hideProgressBar: false,
@@ -29,8 +29,8 @@ const Manager = () => {
             progress: undefined,
             theme: "light",
         });
-        navigator.clipboard.writeText(text)
-    }
+        navigator.clipboard.writeText(text);
+    };
 
     const showPassword = () => {
         passwordRef.current.type = "text";
@@ -116,8 +116,10 @@ const Manager = () => {
                             />
                             <span
                                 className="absolute right-[3px] top-[5px] cursor-pointer"
-                                onClick={() => { showPassword }
-                                }                   >
+                                onClick={() => {
+                                    showPassword;
+                                }}
+                            >
                                 <img
                                     ref={ref}
                                     className="p-1"
@@ -130,8 +132,10 @@ const Manager = () => {
                     </div>
 
                     <button
-                        onClick={() => { savePassword }
-                        } className="flex justify-center gap-2 items-center bg-green-500
+                        onClick={() => {
+                            savePassword;
+                        }}
+                        className="flex justify-center gap-2 items-center bg-green-500
                         hover:bg-green-400 rounded-full px-8 py-2 w-fit border border-green-900"
                     >
                         <lord-icon
@@ -162,15 +166,20 @@ const Manager = () => {
                                                 <a href={item.site} target="_blank">
                                                     <div className="flex items-center justify-center">
                                                         <span>{item.site}</span>
-                                                        <div className="lordiconcopy size-7 cursor-pointer" onClick={() => { copyText(item.site) }}>
+                                                        <div
+                                                            className="lordiconcopy size-7 cursor-pointer"
+                                                            onClick={() => {
+                                                                copyText(item.site);
+                                                            }}
+                                                        >
                                                             <lord-icon
                                                                 style={{
                                                                     width: "25px",
                                                                     height: "25px",
-                                                                    "paddingTop": "3px",
-                                                                    "paddingLeft": "3px",
+                                                                    paddingTop: "3px",
+                                                                    paddingLeft: "3px",
                                                                 }}
-                                                                src="https://cdn.lordicon.com/depeqmsz.json"
+                                                                src="https://cdn.lordicon.com/iykgtsbt.json"
                                                                 trigger="hover"
                                                             ></lord-icon>
                                                         </div>
@@ -180,15 +189,20 @@ const Manager = () => {
                                             <td className="py-2 border border-white text-center ">
                                                 <div className="flex items-center justify-center">
                                                     <span>{item.username}</span>
-                                                    <div className="lordiconcopy size-7 cursor-pointer" onClick={() => { copyText(item.username) }}>
+                                                    <div
+                                                        className="lordiconcopy size-7 cursor-pointer"
+                                                        onClick={() => {
+                                                            copyText(item.username);
+                                                        }}
+                                                    >
                                                         <lord-icon
                                                             style={{
                                                                 width: "25px",
                                                                 height: "25px",
-                                                                "paddingTop": "3px",
-                                                                "paddingLeft": "3px",
+                                                                paddingTop: "3px",
+                                                                paddingLeft: "3px",
                                                             }}
-                                                            src="https://cdn.lordicon.com/depeqmsz.json"
+                                                            src="https://cdn.lordicon.com/iykgtsbt.json"
                                                             trigger="hover"
                                                         ></lord-icon>
                                                     </div>
@@ -197,22 +211,33 @@ const Manager = () => {
                                             <td className="py-2 border border-white text-center">
                                                 <div className="flex items-center justify-center">
                                                     <span>{item.password}</span>
-                                                    <div className="lordiconcopy size-7 cursor-pointer" onClick={() => { copyText(item.password) }}>
+                                                    <div
+                                                        className="lordiconcopy size-7 cursor-pointer"
+                                                        onClick={() => {
+                                                            copyText(item.password);
+                                                        }}
+                                                    >
                                                         <lord-icon
                                                             style={{
                                                                 width: "25px",
                                                                 height: "25px",
-                                                                "paddingTop": "3px",
-                                                                "paddingLeft": "3px",
+                                                                paddingTop: "3px",
+                                                                paddingLeft: "3px",
                                                             }}
-                                                            src="https://cdn.lordicon.com/depeqmsz.json"
+                                                            src="https://cdn.lordicon.com/iykgtsbt.json"
                                                             trigger="hover"
                                                         ></lord-icon>
                                                     </div>
                                                 </div>
                                             </td>
                                             <td className="py-2 border border-white text-center">
-                                                <span>Delete</span>
+                                                <span>
+                                                    <lord-icon
+                                                        src="https://cdn.lordicon.com/gwlusjdu.json"
+                                                        trigger="hover"
+                                                        style={{ width: "30px", height: "30px" }}
+                                                    ></lord-icon>
+                                                </span>
                                             </td>
                                         </tr>
                                     );
