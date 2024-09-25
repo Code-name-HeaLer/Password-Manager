@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { useState } from "react";
 import { useRef } from "react";
+import { v4 as uuidv4 } from 'uuid';
 
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
@@ -45,9 +46,15 @@ const Manager = () => {
     };
 
     const savePassword = () => {
-        setPasswordArray([...passwordArray, form]);
-        localStorage.setItem("passwords", JSON.stringify([...passwordArray, form]));
+        setPasswordArray([...passwordArray, { ...form, id: uuidv4() }]);
+        localStorage.setItem("passwords", JSON.stringify([...passwordArray, { ...form, id: uuidv4() }]));
         console.log([...passwordArray, form]);
+    };
+
+    const deletePassword = () => {
+        // setPasswordArray([...passwordArray, { ...form, id: uuidv4() }]);
+        // localStorage.setItem("passwords", JSON.stringify([...passwordArray, form]));
+        //  console.log([...passwordArray, form]);
     };
 
     const handleChange = (e) => {
@@ -142,7 +149,7 @@ const Manager = () => {
                             src="https://cdn.lordicon.com/jgnvfzqg.json"
                             trigger="hover"
                         ></lord-icon>
-                        Add Password
+                        Save Password
                     </button>
                 </div>
                 <div className="passwords">
@@ -231,9 +238,16 @@ const Manager = () => {
                                                 </div>
                                             </td>
                                             <td className="py-2 border border-white text-center">
-                                                <span>
+                                                <span className="cursor-pointer mx-1">
                                                     <lord-icon
                                                         src="https://cdn.lordicon.com/gwlusjdu.json"
+                                                        trigger="hover"
+                                                        style={{ width: "30px", height: "30px" }}
+                                                    ></lord-icon>
+                                                </span>
+                                                <span className="cursor-pointer mx-1">
+                                                    <lord-icon
+                                                        src="https://cdn.lordicon.com/skkahier.json"
                                                         trigger="hover"
                                                         style={{ width: "30px", height: "30px" }}
                                                     ></lord-icon>

@@ -10,7 +10,7 @@ const Navbar = () => {
           <span className='text-green-500'>OP/&gt;</span>
         </div>
         <button className='text-white bg-green-700 my-5 mx-2 rounded-full 
-        flex justify-between items-center'>
+        flex justify-between items-center ring-white ring-1'>
           <img src="/github.svg" alt="github logo" className='w-10 p-1' />
           <span className='font-bold px-2'>GitHub</span>
         </button>
