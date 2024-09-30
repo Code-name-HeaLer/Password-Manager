@@ -1,237 +1,166 @@
-import React from 'react'
-import { useRef, useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { ToastContainer, toast } from 'react-toastify';
 import { v4 as uuidv4 } from 'uuid';
+import { Eye, EyeOff, Copy, Edit, Trash2, Save, Plus } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 import 'react-toastify/dist/ReactToastify.css';
 
 const Manager = () => {
-    const ref = useRef()
-    const passwordRef = useRef()
-    const [form, setform] = useState({ site: "", username: "", password: "" })
-    const [passwordArray, setPasswordArray] = useState([])
+    const [passwords, setPasswords] = useState([]);
+    const [form, setForm] = useState({ site: "", username: "", password: "" });
+    const [showPassword, setShowPassword] = useState(false);
+    const [editingId, setEditingId] = useState(null);
 
     useEffect(() => {
-        let passwords = localStorage.getItem("passwords");
-        if (passwords) {
-            setPasswordArray(JSON.parse(passwords))
+        const storedPasswords = localStorage.getItem("passwords");
+        if (storedPasswords) {
+            setPasswords(JSON.parse(storedPasswords));
         }
-    }, [])
-
-    const copyText = (text) => {
-        toast('Copied to clipboard!', {
-            position: "top-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: true,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "dark",
-        });
-        navigator.clipboard.writeText(text)
-    }
-
-
-
-    const showPassword = () => {
-        passwordRef.current.type = "text"
-        console.log(ref.current.src)
-        if (ref.current.src.includes("icons/eyecross.png")) {
-            ref.current.src = "icons/eye.png"
-            passwordRef.current.type = "password"
-        }
-        else {
-            passwordRef.current.type = "text"
-            ref.current.src = "icons/eyecross.png"
-        }
-
-    }
+    }, []);
 
     const savePassword = () => {
         if (form.site.length > 3 && form.username.length > 3 && form.password.length > 3) {
-
-            setPasswordArray([...passwordArray, { ...form, id: uuidv4() }])
-            localStorage.setItem("passwords", JSON.stringify([...passwordArray, { ...form, id: uuidv4() }]))
-            console.log([...passwordArray, form])
-            setform({ site: "", username: "", password: "" })
-            toast('Password saved!', {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "dark",
-            });
+            const newPassword = { ...form, id: uuidv4() };
+            const updatedPasswords = [...passwords, newPassword];
+            setPasswords(updatedPasswords);
+            localStorage.setItem("passwords", JSON.stringify(updatedPasswords));
+            setForm({ site: "", username: "", password: "" });
+            toast.success('Password saved successfully!');
+        } else {
+            toast.error('Please fill all fields with at least 4 characters.');
         }
-        else {
-            toast('Error: Password not saved!');
-        }
-
-    }
+    };
 
     const deletePassword = (id) => {
-        console.log("Deleting password with id ", id)
-        let c = confirm("Do you really want to delete this password?")
-        if (c) {
-            setPasswordArray(passwordArray.filter(item => item.id !== id))
-            localStorage.setItem("passwords", JSON.stringify(passwordArray.filter(item => item.id !== id)))
-            toast('Password Deleted!', {
-                position: "top-right",
-                autoClose: 5000,
-                hideProgressBar: false,
-                closeOnClick: true,
-                pauseOnHover: true,
-                draggable: true,
-                progress: undefined,
-                theme: "dark",
-            });
-        }
+        const updatedPasswords = passwords.filter(item => item.id !== id);
+        setPasswords(updatedPasswords);
+        localStorage.setItem("passwords", JSON.stringify(updatedPasswords));
+        toast.info('Password deleted.');
+    };
 
-    }
     const editPassword = (id) => {
+        setEditingId(id);
+        const passwordToEdit = passwords.find(p => p.id === id);
+        setForm(passwordToEdit);
+    };
 
-        console.log("Editing password with id ", id)
-        setform(passwordArray.filter(i => i.id === id)[0])
-        setPasswordArray(passwordArray.filter(item => item.id !== id))
+    const updatePassword = () => {
+        const updatedPasswords = passwords.map(p =>
+            p.id === editingId ? { ...form, id: editingId } : p
+        );
+        setPasswords(updatedPasswords);
+        localStorage.setItem("passwords", JSON.stringify(updatedPasswords));
+        setForm({ site: "", username: "", password: "" });
+        setEditingId(null);
+        toast.success('Password updated successfully!');
+    };
 
-    }
-
-
-
-    const handleChange = (e) => {
-        setform({ ...form, [e.target.name]: e.target.value })
-    }
-
-
+    const copyToClipboard = (text) => {
+        navigator.clipboard.writeText(text);
+        toast.info('Copied to clipboard!');
+    };
 
     return (
-        <>
-            <ToastContainer
-                position="top-right"
-                autoClose={5000}
-                hideProgressBar={false}
-                newestOnTop={false}
-                closeOnClick
-                rtl={false}
-                pauseOnFocusLoss
-                draggable
-                pauseOnHover
-                theme="light"
-                transition="Bounce"
-            />
-            {/* Same as */}
-            <ToastContainer />
-            <div className="absolute inset-0 -z-10 h-full w-full bg-red-50 bg-[linear-gradient(to_right,#8080800a_1px,transparent_1px),linear-gradient(to_bottom,#8080800a_1px,transparent_1px)] bg-[size:14px_24px]"><div className="absolute left-0 right-0 top-0 -z-10 m-auto h-[310px] w-[310px] rounded-full bg-red-400 opacity-20 blur-[100px]"></div></div>
-            <div className=" p-3 md:mycontainer min-h-[88.2vh] ">
-                <h1 className='text-4xl text font-bold text-center'>
-                    <span className='text-red-500'> &lt;</span>
+        <div className="min-h-screen bg-gradient-to-br from-gray-900 to-gray-800 text-white p-8">
+            <ToastContainer position="top-right" autoClose={3000} hideProgressBar={false} newestOnTop={false} closeOnClick rtl={false} pauseOnFocusLoss draggable pauseOnHover theme="dark" />
 
-                    <span>Pass</span><span className='text-red-500'>OP/&gt;</span>
+            <h1 className="text-4xl font-bold text-center mb-8">
+                <span className="text-red-500">&lt;</span>
+                Pass<span className="text-red-500">OP</span>
+                <span className="text-red-500">/&gt;</span>
+            </h1>
 
-                </h1>
-                <p className='text-red-900 text-lg text-center'>Your own Password Manager</p>
-
-                <div className="flex flex-col p-4 text-black gap-8 items-center">
-                    <input value={form.site} onChange={handleChange} placeholder='Enter website URL' className='rounded-full border border-red-500 w-full p-4 py-1' type="text" name="site" id="site" />
-                    <div className="flex flex-col md:flex-row w-full justify-between gap-8">
-                        <input value={form.username} onChange={handleChange} placeholder='Enter Username' className='rounded-full border border-red-500 w-full p-4 py-1' type="text" name="username" id="username" />
-                        <div className="relative">
-
-                            <input ref={passwordRef} value={form.password} onChange={handleChange} placeholder='Enter Password' className='rounded-full border border-red-500 w-full p-4 py-1' type="password" name="password" id="password" />
-                            <span className='absolute right-[3px] top-[4px] cursor-pointer' onClick={showPassword}>
-                                <img ref={ref} className='p-1' width={26} src="icons/eye.png" alt="eye" />
-                            </span>
+            <div className="max-w-4xl mx-auto bg-gray-800 rounded-lg shadow-xl p-8">
+                <form onSubmit={(e) => { e.preventDefault(); editingId ? updatePassword() : savePassword(); }} className="space-y-4 mb-8">
+                    <input
+                        value={form.site}
+                        onChange={(e) => setForm({ ...form, site: e.target.value })}
+                        placeholder="Website URL"
+                        className="w-full bg-gray-700 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-red-500"
+                        type="text"
+                    />
+                    <div className="flex space-x-4">
+                        <input
+                            value={form.username}
+                            onChange={(e) => setForm({ ...form, username: e.target.value })}
+                            placeholder="Username"
+                            className="w-1/2 bg-gray-700 rounded-md p-3 focus:outline-none focus:ring-2 focus:ring-red-500"
+                            type="text"
+                        />
+                        <div className="w-1/2 relative">
+                            <input
+                                value={form.password}
+                                onChange={(e) => setForm({ ...form, password: e.target.value })}
+                                placeholder="Password"
+                                className="w-full bg-gray-700 rounded-md p-3 pr-10 focus:outline-none focus:ring-2 focus:ring-red-500"
+                                type={showPassword ? "text" : "password"}
+                            />
+                            <button
+                                type="button"
+                                onClick={() => setShowPassword(!showPassword)}
+                                className="absolute right-3 top-1/2 transform -translate-y-1/2"
+                            >
+                                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                            </button>
                         </div>
-
                     </div>
-                    <button onClick={savePassword} className='flex justify-center items-center gap-2 bg-red-400 hover:bg-red-300 rounded-full px-8 py-2 w-fit border border-red-900'>
-                        <lord-icon
-                            src="https://cdn.lordicon.com/jgnvfzqg.json"
-                            trigger="hover" >
-                        </lord-icon>
-                        Save</button>
-                </div>
+                    <button
+                        type="submit"
+                        className="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-3 px-4 rounded-md transition duration-300 flex items-center justify-center"
+                    >
+                        {editingId ? <><Save size={20} className="mr-2" /> Update Password</> : <><Plus size={20} className="mr-2" /> Save Password</>}
+                    </button>
+                </form>
 
-                <div className="passwords">
-                    <h2 className='font-bold text-2xl py-4'>Your Passwords</h2>
-                    {passwordArray.length === 0 && <div> No passwords to show</div>}
-                    {passwordArray.length != 0 && <table className="table-auto w-full rounded-md overflow-hidden mb-10">
-                        <thead className='bg-red-800 text-white'>
-                            <tr>
-                                <th className='py-2'>Site</th>
-                                <th className='py-2'>Username</th>
-                                <th className='py-2'>Password</th>
-                                <th className='py-2'>Actions</th>
+                <div className="overflow-x-auto">
+                    <table className="w-full text-left border-collapse">
+                        <thead>
+                            <tr className="bg-gray-700">
+                                <th className="p-3 font-bold uppercase">Site</th>
+                                <th className="p-3 font-bold uppercase">Username</th>
+                                <th className="p-3 font-bold uppercase">Password</th>
+                                <th className="p-3 font-bold uppercase">Actions</th>
                             </tr>
                         </thead>
-                        <tbody className='bg-red-100'>
-                            {passwordArray.map((item, index) => {
-                                return <tr key={index}>
-                                    <td className='py-2 border border-white text-center'>
-                                        <div className='flex items-center justify-center '>
-                                            <a href={item.site} target='_blank'>{item.site}</a>
-                                            <div className='lordiconcopy size-7 cursor-pointer' onClick={() => { copyText(item.site) }}>
-                                                <lord-icon
-                                                    style={{ "width": "25px", "height": "25px", "paddingTop": "3px", "paddingLeft": "3px" }}
-                                                    src="https://cdn.lordicon.com/iykgtsbt.json"
-                                                    trigger="hover" >
-                                                </lord-icon>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td className='py-2 border border-white text-center'>
-                                        <div className='flex items-center justify-center '>
-                                            <span>{item.username}</span>
-                                            <div className='lordiconcopy size-7 cursor-pointer' onClick={() => { copyText(item.username) }}>
-                                                <lord-icon
-                                                    style={{ "width": "25px", "height": "25px", "paddingTop": "3px", "paddingLeft": "3px" }}
-                                                    src="https://cdn.lordicon.com/iykgtsbt.json"
-                                                    trigger="hover" >
-                                                </lord-icon>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td className='py-2 border border-white text-center'>
-                                        <div className='flex items-center justify-center '>
-                                            <span>{item.password}</span>
-                                            <div className='lordiconcopy size-7 cursor-pointer' onClick={() => { copyText(item.password) }}>
-                                                <lord-icon
-                                                    style={{ "width": "25px", "height": "25px", "paddingTop": "3px", "paddingLeft": "3px" }}
-                                                    src="https://cdn.lordicon.com/iykgtsbt.json"
-                                                    trigger="hover" >
-                                                </lord-icon>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td className='justify-center py-2 border border-white text-center'>
-                                        <span className='cursor-pointer mx-1' onClick={() => { editPassword(item.id) }}>
-                                            <lord-icon
-                                                src="https://cdn.lordicon.com/gwlusjdu.json"
-                                                trigger="hover"
-                                                style={{ "width": "25px", "height": "25px" }}>
-                                            </lord-icon>
-                                        </span>
-                                        <span className='cursor-pointer mx-1' onClick={() => { deletePassword(item.id) }}>
-                                            <lord-icon
-                                                src="https://cdn.lordicon.com/skkahier.json"
-                                                trigger="hover"
-                                                style={{ "width": "25px", "height": "25px" }}>
-                                            </lord-icon>
-                                        </span>
-                                    </td>
-                                </tr>
-
-                            })}
+                        <tbody>
+                            <AnimatePresence>
+                                {passwords.map((item) => (
+                                    <motion.tr
+                                        key={item.id}
+                                        initial={{ opacity: 0, y: -10 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        exit={{ opacity: 0, y: -10 }}
+                                        transition={{ duration: 0.3 }}
+                                        className="bg-gray-800 hover:bg-gray-700 transition-colors"
+                                    >
+                                        <td className="p-3">{item.site}</td>
+                                        <td className="p-3">{item.username}</td>
+                                        <td className="p-3">
+                                            <span className="flex items-center">
+                                                {'•'.repeat(8)}
+                                                <button onClick={() => copyToClipboard(item.password)} className="ml-2 text-gray-400 hover:text-white">
+                                                    <Copy size={16} />
+                                                </button>
+                                            </span>
+                                        </td>
+                                        <td className="p-3">
+                                            <button onClick={() => editPassword(item.id)} className="mr-2 text-blue-400 hover:text-blue-300">
+                                                <Edit size={20} />
+                                            </button>
+                                            <button onClick={() => deletePassword(item.id)} className="text-red-400 hover:text-red-300">
+                                                <Trash2 size={20} />
+                                            </button>
+                                        </td>
+                                    </motion.tr>
+                                ))}
+                            </AnimatePresence>
                         </tbody>
-                    </table>}
+                    </table>
                 </div>
             </div>
+        </div>
+    );
+};
 
-        </>
-    )
-}
-
-export default Manager
+export default Manager;

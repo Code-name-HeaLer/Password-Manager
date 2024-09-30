@@ -1,32 +1,27 @@
-import React from 'react'
+import React from 'react';
+import { Github } from 'lucide-react';
 
 const Navbar = () => {
     return (
-        <nav className='bg-slate-800 text-white '>
-            <div className="mycontainer flex justify-between items-center px-4 py-5 h-14">
-
-                <div className="logo font-bold text-white text-2xl">
-                    <span className='text-red-500'> &lt;</span>
-
-                    <span>Pass</span><span className='text-red-500'>OP/&gt;</span>
-
-
+        <nav className='bg-gray-900 text-white shadow-lg'>
+            <div className="container mx-auto px-6 py-3 flex justify-between items-center">
+                <div className="logo font-bold text-2xl">
+                    <span className='text-red-500'>&lt;</span>
+                    Pass<span className='text-red-500'>OP</span>
+                    <span className='text-red-500'>/&gt;</span>
                 </div>
-                {/* <ul>
-                    <li className='flex gap-4 '>
-                        <a className='hover:font-bold' href='/'>Home</a>
-                        <a className='hover:font-bold' href='#'>About</a>
-                        <a className='hover:font-bold' href='#'>Contact</a>
-                    </li>
-                </ul> */}
-                <button className='text-white bg-red-700 my-5 mx-2 rounded-full flex  justify-between items-center ring-white ring-1'>
-                    <img className='invert  w-10 p-1' src="/icons/github.svg" alt="github logo" />
-                    <span className='font-bold px-2'>GitHub</span>
-
-                </button>
+                <a
+                    href="https://github.com/yourusername/your-repo"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className='bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-full transition duration-300 flex items-center'
+                >
+                    <Github size={20} className="mr-2" />
+                    GitHub
+                </a>
             </div>
         </nav>
-    )
-}
+    );
+};
 
-export default Navbar
+export default Navbar;

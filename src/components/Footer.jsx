@@ -1,18 +1,21 @@
-import React from 'react'
+import React from 'react';
+import { Heart } from 'lucide-react';
 
 const Footer = () => {
     return (
-        <div className='bg-slate-800 text-white flex flex-col justify-center items-center  w-full'>
-            <div className="logo font-bold text-white text-2xl">
-                <span className='text-red-500'> &lt;</span>
-
-                <span>Pass</span><span className='text-red-500'>OP/&gt;</span>
-
-
+        <footer className='bg-gray-900 text-white py-6'>
+            <div className="container mx-auto px-6 flex flex-col items-center">
+                <div className="logo font-bold text-2xl mb-2">
+                    <span className='text-red-500'>&lt;</span>
+                    Pass<span className='text-red-500'>OP</span>
+                    <span className='text-red-500'>/&gt;</span>
+                </div>
+                <div className='flex items-center text-sm'>
+                    Created with <Heart size={16} className="text-red-500 mx-1" /> by HeaLer
+                </div>
             </div>
-            <div className='flex justify-center items-center'> Created with <img className='w-7 mx-2' src="/vite.svg" alt="" /> by HeaLer </div>
-        </div>
-    )
-}
+        </footer>
+    );
+};
 
-export default Footer
+export default Footer;
